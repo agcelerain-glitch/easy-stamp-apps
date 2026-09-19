@@ -83,26 +83,48 @@ export default function UserHomePage() {
           <span>スタンプラリー</span>
         </Link>
 
-        {/* リロードボタン */}
-        <button
-          onClick={handleReload}
-          disabled={reloading || isRefreshing}
-          aria-label="更新"
-          className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium
-                     text-indigo-600 bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200
-                     disabled:opacity-40 transition-colors"
-        >
-          <svg
-            width="14" height="14" viewBox="0 0 20 20"
-            fill="none" stroke="currentColor" strokeWidth="2.2"
-            strokeLinecap="round" strokeLinejoin="round"
-            className={reloading || isRefreshing ? "animate-spin" : ""}
+        {/* 右側ボタン群 */}
+        <div className="flex items-center gap-2">
+          {/* リロードボタン */}
+          <button
+            onClick={handleReload}
+            disabled={reloading || isRefreshing}
+            aria-label="更新"
+            className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium
+                       text-indigo-600 bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200
+                       disabled:opacity-40 transition-colors"
           >
-            <path d="M4 4a8 8 0 1 1 0 12" />
-            <path d="M4 8V4H0" />
-          </svg>
-          {reloading || isRefreshing ? "更新中" : "更新"}
-        </button>
+            <svg
+              width="14" height="14" viewBox="0 0 20 20"
+              fill="none" stroke="currentColor" strokeWidth="2.2"
+              strokeLinecap="round" strokeLinejoin="round"
+              className={reloading || isRefreshing ? "animate-spin" : ""}
+            >
+              <path d="M4 4a8 8 0 1 1 0 12" />
+              <path d="M4 8V4H0" />
+            </svg>
+            {reloading || isRefreshing ? "更新中" : "更新"}
+          </button>
+
+          {/* 管理者ログインボタン */}
+          <Link
+            href="/admin"
+            className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium
+                       text-gray-400 bg-gray-100 hover:bg-gray-200 active:bg-gray-300
+                       transition-colors"
+            aria-label="管理者ログイン"
+          >
+            <svg
+              width="13" height="13" viewBox="0 0 20 20"
+              fill="none" stroke="currentColor" strokeWidth="2"
+              strokeLinecap="round" strokeLinejoin="round"
+            >
+              <rect x="3" y="9" width="14" height="10" rx="2" />
+              <path d="M7 9V6a3 3 0 0 1 6 0v3" />
+            </svg>
+            管理者
+          </Link>
+        </div>
       </header>
 
       {/* プルリフレッシュ インジケーター */}
