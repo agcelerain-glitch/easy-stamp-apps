@@ -163,12 +163,6 @@ export default function StampsPage() {
     if (profileId) loadStamps(profileId);
   }
 
-  function handleLogout() {
-    localStorage.removeItem("profile_id");
-    localStorage.removeItem("nickname");
-    router.push("/");
-  }
-
   const stampCount = stamps.length;
 
   // ────────────────────────────────────────────
@@ -190,15 +184,7 @@ export default function StampsPage() {
           <span>🎯</span>
           <span>スタンプラリー</span>
         </Link>
-        <div className="flex items-center gap-3">
-          <span className="text-xs text-gray-500">{nickname}</span>
-          <button
-            onClick={handleLogout}
-            className="text-xs text-gray-400 hover:text-gray-600 underline"
-          >
-            終了
-          </button>
-        </div>
+        <span className="text-xs text-gray-500">{nickname}</span>
       </header>
 
       <div className="flex-1 px-4 py-6 max-w-sm mx-auto w-full">

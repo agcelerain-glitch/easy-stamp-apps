@@ -11,10 +11,9 @@ const POINT_LABELS = ["ポイント①", "ポイント②", "ポイント③", "
 
 export default function UserHomePage() {
   const router = useRouter();
-  const [nickname, setNickname]   = useState("");
-  const [profileId, setProfileId] = useState<string | null>(null);
-  const [stamps, setStamps]       = useState<StampData[]>([]);
-  const [loading, setLoading]     = useState(true);
+  const [nickname, setNickname] = useState("");
+  const [stamps, setStamps]     = useState<StampData[]>([]);
+  const [loading, setLoading]   = useState(true);
 
   const loadStamps = useCallback(async (pid: string) => {
     try {
@@ -35,16 +34,9 @@ export default function UserHomePage() {
       router.replace("/user");
       return;
     }
-    setProfileId(pid);
     setNickname(nick);
     loadStamps(pid).finally(() => setLoading(false));
   }, [router, loadStamps]);
-
-  function handleSwitchUser() {
-    localStorage.removeItem("profile_id");
-    localStorage.removeItem("nickname");
-    router.push("/user");
-  }
 
   const stampCount = stamps.length;
   const isComplete = stampCount === 5;
@@ -60,17 +52,11 @@ export default function UserHomePage() {
   return (
     <main className="flex flex-col min-h-screen bg-gradient-to-b from-indigo-50 to-white">
       {/* ヘッダー */}
-      <header className="flex items-center justify-between px-4 py-3 border-b border-indigo-100 bg-white/80 backdrop-blur-sm">
+      <header className="px-4 py-3 border-b border-indigo-100 bg-white/80 backdrop-blur-sm">
         <Link href="/user/home" className="flex items-center gap-2 font-bold text-indigo-700">
           <span>🎯</span>
           <span>スタンプラリー</span>
         </Link>
-        <button
-          onClick={handleSwitchUser}
-          className="text-xs text-gray-400 hover:text-gray-600 underline"
-        >
-          ユーザー切替
-        </button>
       </header>
 
       <div className="flex-1 px-4 py-8 max-w-sm mx-auto w-full flex flex-col gap-6">
@@ -170,19 +156,9 @@ export default function UserHomePage() {
         >
           {isComplete ? "スタンプボードを見る" : "スタンプを集める →"}
         </Link>
-
-        {/* 別ユーザーログイン */}
-        <div className="text-center">
-          <button
-            onClick={handleSwitchUser}
-            className="text-sm text-gray-400 hover:text-gray-600 underline underline-offset-2"
-          >
-            別のユーザーネームでログインする
-          </button>
-        </div>
       </div>
 
-      {/* 開発者用リンク（最下部に控えめに配置） */}
+      {/* 開発者用リンク（最下部・極小） */}
       <div className="text-center py-4">
         <Link
           href="/dev/clear"
