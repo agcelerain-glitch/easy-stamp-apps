@@ -67,6 +67,13 @@ create policy "otp_codes_select" on otp_codes
   for select using (true);
 
 -- =====================================================
+-- Supabase Realtime 有効化
+-- stamps テーブルへの INSERT をリアルタイムで配信する
+-- =====================================================
+
+alter publication supabase_realtime add table stamps;
+
+-- =====================================================
 -- 期限切れ OTP 自動削除（pg_cron）
 -- Supabase ダッシュボード > Database > Extensions で
 -- pg_cron を有効にしてから実行してください

@@ -10,3 +10,69 @@ body {
     "Yu Gothic", sans-serif;
   -webkit-tap-highlight-color: transparent;
 }
+
+/* ─── 個別スタンプ（判子）アニメーション ─── */
+
+@keyframes stamp-drop {
+  0%   { transform: translateY(-90px) rotate(-14deg) scale(1.8); opacity: 0; }
+  35%  { transform: translateY(4px)   rotate(5deg)  scale(1.25); opacity: 1; }
+  50%  { transform: translateY(-2px)  rotate(-3deg) scale(0.88); }
+  65%  { transform: translateY(1px)   rotate(2deg)  scale(1.06); }
+  80%  { transform: translateY(0)     rotate(-1deg) scale(0.97); }
+  100% { transform: translateY(0)     rotate(0)     scale(1);    opacity: 1; }
+}
+
+@keyframes stamp-flash {
+  0%   { opacity: 0; }
+  25%  { opacity: 0.65; }
+  55%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+@keyframes ink-ripple {
+  0%   { transform: scale(0);   opacity: 0.7; }
+  65%  { transform: scale(3.8); opacity: 0.15; }
+  100% { transform: scale(4.5); opacity: 0; }
+}
+
+@keyframes ink-ripple-2 {
+  0%   { transform: scale(0);   opacity: 0.45; }
+  70%  { transform: scale(5);   opacity: 0.08; }
+  100% { transform: scale(6);   opacity: 0; }
+}
+
+/* ─── コンプリートアニメーション ─── */
+
+@keyframes complete-overlay {
+  0%   { opacity: 0; }
+  8%   { opacity: 1; }
+  82%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes complete-text {
+  0%   { transform: scale(0.2) rotate(-8deg); opacity: 0; }
+  55%  { transform: scale(1.18) rotate(2deg); opacity: 1; }
+  72%  { transform: scale(0.94) rotate(-1deg); }
+  85%  { transform: scale(1.04) rotate(0.5deg); }
+  100% { transform: scale(1)    rotate(0);     opacity: 1; }
+}
+
+@keyframes fade-up {
+  0%   { transform: translateY(16px); opacity: 0; }
+  100% { transform: translateY(0);    opacity: 1; }
+}
+
+@keyframes confetti-fall {
+  0%   { transform: translateY(-10px) rotate(0deg)   scaleX(1);    opacity: 1; }
+  25%  { transform: translateY(25vh)  rotate(180deg) scaleX(0.6);  opacity: 1; }
+  50%  { transform: translateY(50vh)  rotate(360deg) scaleX(1);    opacity: 1; }
+  75%  { transform: translateY(75vh)  rotate(540deg) scaleX(0.5);  opacity: 0.8; }
+  100% { transform: translateY(105vh) rotate(720deg) scaleX(1);    opacity: 0; }
+}
+
+@keyframes sparkle-pop {
+  0%   { transform: scale(0) rotate(0deg);   opacity: 1; }
+  45%  { transform: scale(1.4) rotate(160deg); opacity: 1; }
+  100% { transform: scale(0) rotate(320deg); opacity: 0; }
+}
