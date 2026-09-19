@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import QRModal from "@/components/QRModal";
 import StampAnimation from "@/components/StampAnimation";
@@ -185,16 +186,19 @@ export default function StampsPage() {
     <main className="flex flex-col min-h-screen bg-gradient-to-b from-indigo-50 to-white">
       {/* ヘッダー */}
       <header className="flex items-center justify-between px-4 py-3 border-b border-indigo-100 bg-white/80 backdrop-blur-sm">
-        <div>
-          <p className="text-xs text-gray-500">ようこそ</p>
-          <p className="font-bold text-indigo-700">{nickname} さん</p>
+        <Link href="/user/home" className="flex items-center gap-2 font-bold text-indigo-700">
+          <span>🎯</span>
+          <span>スタンプラリー</span>
+        </Link>
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-gray-500">{nickname}</span>
+          <button
+            onClick={handleLogout}
+            className="text-xs text-gray-400 hover:text-gray-600 underline"
+          >
+            終了
+          </button>
         </div>
-        <button
-          onClick={handleLogout}
-          className="text-xs text-gray-400 hover:text-gray-600 underline"
-        >
-          終了
-        </button>
       </header>
 
       <div className="flex-1 px-4 py-6 max-w-sm mx-auto w-full">

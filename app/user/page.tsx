@@ -18,7 +18,7 @@ export default function UserPage() {
     const saved = localStorage.getItem("profile_id");
     const savedNick = localStorage.getItem("nickname");
     if (saved && savedNick) {
-      router.replace("/user/stamps");
+      router.replace("/user/home");
     } else {
       setStep("enter");
     }
@@ -75,7 +75,7 @@ export default function UserPage() {
         const created = await createRes.json();
         localStorage.setItem("profile_id", created.profile_id);
         localStorage.setItem("nickname", trimmed);
-        router.push("/user/stamps");
+        router.push("/user/home");
       }
     } catch (e) {
       if (e instanceof Error && e.name === "TimeoutError") {
@@ -89,7 +89,7 @@ export default function UserPage() {
   }
 
   function handleContinue() {
-    router.push("/user/stamps");
+    router.push("/user/home");
   }
 
   function handleUseDifferent() {
