@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
+import PullRefreshIndicator from "@/components/PullRefreshIndicator";
 
 type StampData = { stamp_point_id: number; stamped_at: string };
 
@@ -11,14 +13,17 @@ const POINT_LABELS = ["ポイント①", "ポイント②", "ポイント③", "
 
 export default function UserHomePage() {
   const router = useRouter();
-  const [nickname, setNickname] = useState("");
-  const [stamps, setStamps]     = useState<StampData[]>([]);
-  const [loading, setLoading]   = useState(true);
+  const [nickname, setNickname]     = useState("");
+  const [profileId, setProfileId]   = useState<string | null>(null);
+  const [stamps, setStamps]         = useState<StampData[]>([]);
+  const [loading, setLoading]       = useState(true);
+  const [reloading, setReloading]   = useState(false);
 
-  const loadStamps = useCallback(async (pid: string) => {
+  const fetchStamps = useCallback(async (pid: string) => {
     try {
       const res = await fetch(`/api/stamps?profile_id=${pid}`, {
         signal: AbortSignal.timeout(8000),
+        cache: "no-store",
       });
       if (res.ok) {
         const data = await res.json();
@@ -34,9 +39,28 @@ export default function UserHomePage() {
       router.replace("/user");
       return;
     }
+    setProfileId(pid);
     setNickname(nick);
-    loadStamps(pid).finally(() => setLoading(false));
-  }, [router, loadStamps]);
+    fetchStamps(pid).finally(() => setLoading(false));
+  }, [router, fetchStamps]);
+
+  // ── リロードボタン ──────────────────────────
+  async function handleReload() {
+    if (!profileId || reloading) return;
+    setReloading(true);
+    await fetchStamps(profileId);
+    setReloading(false);
+  }
+
+  // ── プルリフレッシュ ────────────────────────
+  const pullRefreshFn = useCallback(async () => {
+    if (!profileId) return;
+    await fetchStamps(profileId);
+  }, [profileId, fetchStamps]);
+
+  const { progress, isRefreshing, isPulling } = usePullToRefresh({
+    onRefresh: pullRefreshFn,
+  });
 
   const stampCount = stamps.length;
   const isComplete = stampCount === 5;
@@ -50,16 +74,45 @@ export default function UserHomePage() {
   }
 
   return (
-    <main className="flex flex-col min-h-screen bg-gradient-to-b from-indigo-50 to-white">
+    /* overscroll-none でブラウザ標準 PTR を無効化し、カスタム PTR を優先 */
+    <main className="flex flex-col min-h-screen bg-gradient-to-b from-indigo-50 to-white overscroll-none">
       {/* ヘッダー */}
-      <header className="px-4 py-3 border-b border-indigo-100 bg-white/80 backdrop-blur-sm">
+      <header className="flex items-center justify-between px-4 py-3 border-b border-indigo-100 bg-white/80 backdrop-blur-sm">
         <Link href="/user/home" className="flex items-center gap-2 font-bold text-indigo-700">
           <span>🎯</span>
           <span>スタンプラリー</span>
         </Link>
+
+        {/* リロードボタン */}
+        <button
+          onClick={handleReload}
+          disabled={reloading || isRefreshing}
+          aria-label="更新"
+          className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium
+                     text-indigo-600 bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200
+                     disabled:opacity-40 transition-colors"
+        >
+          <svg
+            width="14" height="14" viewBox="0 0 20 20"
+            fill="none" stroke="currentColor" strokeWidth="2.2"
+            strokeLinecap="round" strokeLinejoin="round"
+            className={reloading || isRefreshing ? "animate-spin" : ""}
+          >
+            <path d="M4 4a8 8 0 1 1 0 12" />
+            <path d="M4 8V4H0" />
+          </svg>
+          {reloading || isRefreshing ? "更新中" : "更新"}
+        </button>
       </header>
 
-      <div className="flex-1 px-4 py-8 max-w-sm mx-auto w-full flex flex-col gap-6">
+      {/* プルリフレッシュ インジケーター */}
+      <PullRefreshIndicator
+        progress={progress}
+        isRefreshing={isRefreshing}
+        isPulling={isPulling}
+      />
+
+      <div className="flex-1 px-4 py-6 max-w-sm mx-auto w-full flex flex-col gap-6">
         {/* ウェルカムセクション */}
         <div className="text-center">
           <p className="text-sm text-gray-400">ようこそ</p>
@@ -108,14 +161,13 @@ export default function UserHomePage() {
                 <div
                   key={pid}
                   className={`flex-1 flex flex-col items-center gap-1 py-2 rounded-xl text-xs
-                    ${
-                      done
-                        ? isComplete
-                          ? "bg-white/30 text-white"
-                          : "bg-indigo-600 text-white"
-                        : isComplete
-                        ? "bg-white/20 text-yellow-100"
-                        : "bg-indigo-50 text-gray-300"
+                    ${done
+                      ? isComplete
+                        ? "bg-white/30 text-white"
+                        : "bg-indigo-600 text-white"
+                      : isComplete
+                      ? "bg-white/20 text-yellow-100"
+                      : "bg-indigo-50 text-gray-300"
                     }`}
                 >
                   <span className="text-lg leading-none">{POINT_ICONS[pid - 1]}</span>
@@ -156,6 +208,11 @@ export default function UserHomePage() {
         >
           {isComplete ? "スタンプボードを見る" : "スタンプを集める →"}
         </Link>
+
+        {/* ヒント */}
+        <p className="text-center text-xs text-gray-300">
+          下に引っ張って更新できます
+        </p>
       </div>
 
       {/* 開発者用リンク（最下部・極小） */}

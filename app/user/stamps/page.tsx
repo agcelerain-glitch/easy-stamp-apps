@@ -7,6 +7,8 @@ import { createClient } from "@/lib/supabase/client";
 import QRModal from "@/components/QRModal";
 import StampAnimation from "@/components/StampAnimation";
 import CompleteAnimation from "@/components/CompleteAnimation";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
+import PullRefreshIndicator from "@/components/PullRefreshIndicator";
 
 type StampData = { stamp_point_id: number; stamped_at: string };
 
@@ -119,6 +121,16 @@ export default function StampsPage() {
     };
   }, [router, loadStamps, handleNewStamp]);
 
+  // ── プルリフレッシュ ────────────────────────
+  const pullRefreshFn = useCallback(async () => {
+    if (!profileId) return;
+    await loadStamps(profileId);
+  }, [profileId, loadStamps]);
+
+  const { progress, isRefreshing, isPulling } = usePullToRefresh({
+    onRefresh: pullRefreshFn,
+  });
+
   // ────────────────────────────────────────────
   // QR コード発行
   // ────────────────────────────────────────────
@@ -177,7 +189,7 @@ export default function StampsPage() {
   }
 
   return (
-    <main className="flex flex-col min-h-screen bg-gradient-to-b from-indigo-50 to-white">
+    <main className="flex flex-col min-h-screen bg-gradient-to-b from-indigo-50 to-white overscroll-none">
       {/* ヘッダー */}
       <header className="flex items-center justify-between px-4 py-3 border-b border-indigo-100 bg-white/80 backdrop-blur-sm">
         <Link href="/user/home" className="flex items-center gap-2 font-bold text-indigo-700">
@@ -186,6 +198,13 @@ export default function StampsPage() {
         </Link>
         <span className="text-xs text-gray-500">{nickname}</span>
       </header>
+
+      {/* プルリフレッシュ インジケーター */}
+      <PullRefreshIndicator
+        progress={progress}
+        isRefreshing={isRefreshing}
+        isPulling={isPulling}
+      />
 
       <div className="flex-1 px-4 py-6 max-w-sm mx-auto w-full">
         {/* 進捗 */}
