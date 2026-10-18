@@ -226,16 +226,6 @@ export default function UserHomePage() {
           下に引っ張って更新できます
         </p>
       </div>
-
-      {/* 開発者用リンク */}
-      <div className="text-center py-4">
-        <Link
-          href="/dev/clear"
-          className="text-[10px] text-emerald-200/20 hover:text-emerald-200/40 transition-colors"
-        >
-          dev: cache
-        </Link>
-      </div>
     </main>
   );
 }
