@@ -80,9 +80,14 @@ export default function AdminPage() {
           </button>
         </form>
 
-        <p className="text-center text-xs text-gray-300 underline">
-          <a href="/">← トップへ戻る</a>
-        </p>
+        <div className="text-center space-y-1">
+          <p className="text-xs text-gray-300 underline">
+            <a href="/">← トップへ戻る</a>
+          </p>
+          <p className="text-xs text-gray-300 underline">
+            <a href="/dev">開発者の方はこちら →</a>
+          </p>
+        </div>
       </div>
     </main>
   );
