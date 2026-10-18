@@ -44,7 +44,7 @@ export default function AdventureMap({
   const stampedSet = new Set(stampedIds);
   const nextPoint = nextRecommendedPoint(stampedIds);
   // 道の点灯：集めたスタンプ数に比例して金の実線を延ばす
-  const revealed = stampedIds.length / (TOTAL_POINTS - 1);
+  const revealed = stampedIds.length / TOTAL_POINTS;
   const roadOffset = Math.max(0, 1 - revealed);
 
   return (
