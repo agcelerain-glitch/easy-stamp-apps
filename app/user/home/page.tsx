@@ -5,11 +5,9 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import PullRefreshIndicator from "@/components/PullRefreshIndicator";
+import { POINT_ICONS, POINT_LABELS, MAP_COLORS } from "@/lib/stamp-points";
 
 type StampData = { stamp_point_id: number; stamped_at: string };
-
-const POINT_ICONS  = ["🗺️", "🏔️", "🌸", "⛩️", "🎊"];
-const POINT_LABELS = ["ポイント①", "ポイント②", "ポイント③", "ポイント④", "ポイント⑤"];
 
 export default function UserHomePage() {
   const router = useRouter();
@@ -74,25 +72,25 @@ export default function UserHomePage() {
   }
 
   return (
-    /* overscroll-none でブラウザ標準 PTR を無効化し、カスタム PTR を優先 */
-    <main className="flex flex-col min-h-screen bg-gradient-to-b from-indigo-50 to-white overscroll-none">
+    <main
+      className="flex flex-col min-h-screen overscroll-none text-white"
+      style={{
+        background: `linear-gradient(to bottom, ${MAP_COLORS.bgTop}, ${MAP_COLORS.bgBottom})`,
+      }}
+    >
       {/* ヘッダー */}
-      <header className="flex items-center justify-between px-4 py-3 border-b border-indigo-100 bg-white/80 backdrop-blur-sm">
-        <Link href="/user/home" className="flex items-center gap-2 font-bold text-indigo-700">
-          <span>🎯</span>
-          <span>スタンプラリー</span>
+      <header className="flex items-center justify-between px-4 py-3 border-b border-emerald-800/50 bg-emerald-950/60 backdrop-blur-sm">
+        <Link href="/user/home" className="flex items-center gap-2 font-bold text-yellow-300">
+          <span>🗺️</span>
+          <span>スタンプの冒険</span>
         </Link>
 
-        {/* 右側ボタン群 */}
         <div className="flex items-center gap-2">
-          {/* リロードボタン */}
           <button
             onClick={handleReload}
             disabled={reloading || isRefreshing}
             aria-label="更新"
-            className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium
-                       text-indigo-600 bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200
-                       disabled:opacity-40 transition-colors"
+            className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium text-emerald-950 bg-yellow-300 active:bg-yellow-400 disabled:opacity-40 transition-colors"
           >
             <svg
               width="14" height="14" viewBox="0 0 20 20"
@@ -106,12 +104,9 @@ export default function UserHomePage() {
             {reloading || isRefreshing ? "更新中" : "更新"}
           </button>
 
-          {/* 管理者ログインボタン */}
           <Link
             href="/admin"
-            className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium
-                       text-gray-400 bg-gray-100 hover:bg-gray-200 active:bg-gray-300
-                       transition-colors"
+            className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium text-emerald-200/70 bg-emerald-900/60 active:bg-emerald-800 transition-colors"
             aria-label="管理者ログイン"
           >
             <svg
@@ -135,84 +130,77 @@ export default function UserHomePage() {
       />
 
       <div className="flex-1 px-4 py-6 max-w-sm mx-auto w-full flex flex-col gap-6">
-        {/* ウェルカムセクション */}
+        {/* ウェルカム */}
         <div className="text-center">
-          <p className="text-sm text-gray-400">ようこそ</p>
-          <p className="text-2xl font-black text-indigo-700 mt-0.5">
-            {nickname} さん
-          </p>
+          <p className="text-sm text-emerald-200/70">ようこそ、冒険者</p>
+          <p className="text-2xl font-black text-yellow-300 mt-0.5">{nickname} さん</p>
         </div>
 
         {/* 進捗カード */}
         <div
-          className={`rounded-3xl p-5 shadow-sm ${
+          className={`rounded-3xl p-5 shadow-lg ${
             isComplete
-              ? "bg-gradient-to-br from-yellow-400 to-orange-400"
-              : "bg-white border border-indigo-100"
+              ? "bg-gradient-to-br from-yellow-400 to-amber-500 text-emerald-950"
+              : "bg-emerald-900/60 border border-emerald-700/50"
           }`}
         >
           {isComplete ? (
-            <div className="text-center text-white">
-              <p className="text-4xl mb-1">🎉</p>
-              <p className="text-2xl font-black tracking-wide">コンプリート！</p>
-              <p className="text-sm mt-1 text-yellow-100">全5カ所を制覇しました！</p>
+            <div className="text-center">
+              <p className="text-4xl mb-1">🏆</p>
+              <p className="text-2xl font-black tracking-wide">クエストクリア！</p>
+              <p className="text-sm mt-1">全5カ所を制覇しました！</p>
             </div>
           ) : (
             <>
               <div className="flex items-end justify-between mb-3">
-                <p className="text-sm text-gray-400">スタンプ収集状況</p>
-                <p className="text-3xl font-black text-indigo-700 leading-none">
+                <p className="text-sm text-emerald-200/70">冒険の進捗</p>
+                <p className="text-3xl font-black text-yellow-300 leading-none">
                   {stampCount}
-                  <span className="text-base text-gray-400 ml-1">/ 5</span>
+                  <span className="text-base text-emerald-200/60 ml-1">/ 5</span>
                 </p>
               </div>
-              <div className="w-full bg-indigo-100 rounded-full h-2.5">
+              <div className="w-full bg-emerald-800/60 rounded-full h-2.5">
                 <div
-                  className="bg-indigo-500 h-2.5 rounded-full transition-all duration-700"
-                  style={{ width: `${(stampCount / 5) * 100}%` }}
+                  className="h-2.5 rounded-full transition-all duration-700"
+                  style={{ width: `${(stampCount / 5) * 100}%`, background: MAP_COLORS.road }}
                 />
               </div>
             </>
           )}
 
-          {/* スタンプ 5 枠ミニ表示 */}
-          <div className="flex justify-between mt-4 gap-1">
+          {/* ミニ地図（横一列ノード＋点線） */}
+          <div className="relative flex justify-between items-center mt-4">
+            <div className="absolute left-3 right-3 top-1/2 -translate-y-1/2 border-t-2 border-dashed border-emerald-600/50" />
             {[1, 2, 3, 4, 5].map((pid) => {
               const done = stamps.some((s) => s.stamp_point_id === pid);
               return (
                 <div
                   key={pid}
-                  className={`flex-1 flex flex-col items-center gap-1 py-2 rounded-xl text-xs
-                    ${done
-                      ? isComplete
-                        ? "bg-white/30 text-white"
-                        : "bg-indigo-600 text-white"
-                      : isComplete
-                      ? "bg-white/20 text-yellow-100"
-                      : "bg-indigo-50 text-gray-300"
-                    }`}
+                  className={`relative z-10 flex items-center justify-center w-9 h-9 rounded-full border-2 text-sm ${
+                    done
+                      ? "bg-emerald-500 border-emerald-200 text-white"
+                      : "bg-emerald-950/80 border-emerald-700 text-emerald-300/70"
+                  }`}
                 >
-                  <span className="text-lg leading-none">{POINT_ICONS[pid - 1]}</span>
-                  <span className="font-semibold">{done ? "✓" : "−"}</span>
+                  {done ? "✓" : POINT_ICONS[pid - 1]}
                 </div>
               );
             })}
           </div>
         </div>
 
-        {/* 未取得ポイントの一覧 */}
+        {/* 未踏の地（残りのポイント） */}
         {!isComplete && (
           <div className="space-y-2">
-            <p className="text-xs text-gray-400 font-semibold tracking-wide">
-              残りのポイント
+            <p className="text-xs text-emerald-200/60 font-semibold tracking-wide">
+              未踏の地
             </p>
             {[1, 2, 3, 4, 5]
               .filter((pid) => !stamps.some((s) => s.stamp_point_id === pid))
               .map((pid) => (
                 <div
                   key={pid}
-                  className="flex items-center gap-3 px-4 py-2.5 bg-white border border-gray-100
-                             rounded-xl text-sm text-gray-600"
+                  className="flex items-center gap-3 px-4 py-2.5 bg-emerald-900/40 border border-emerald-700/40 rounded-xl text-sm text-emerald-100"
                 >
                   <span className="text-xl">{POINT_ICONS[pid - 1]}</span>
                   <span>{POINT_LABELS[pid - 1]}</span>
@@ -221,27 +209,24 @@ export default function UserHomePage() {
           </div>
         )}
 
-        {/* スタンプを集めるボタン */}
+        {/* CTA */}
         <Link
           href="/user/stamps"
-          className="block w-full text-center py-4 px-6 bg-indigo-600 hover:bg-indigo-700
-                     active:bg-indigo-800 text-white text-lg font-bold rounded-2xl shadow-md
-                     transition-colors duration-150"
+          className="block w-full text-center py-4 px-6 bg-yellow-300 active:bg-yellow-400 text-emerald-950 text-lg font-black rounded-2xl shadow-md transition-colors duration-150"
         >
-          {isComplete ? "スタンプボードを見る" : "スタンプを集める →"}
+          {isComplete ? "冒険の地図を見る 🗺️" : "冒険に出る 🗺️"}
         </Link>
 
-        {/* ヒント */}
-        <p className="text-center text-xs text-gray-300">
+        <p className="text-center text-xs text-emerald-200/40">
           下に引っ張って更新できます
         </p>
       </div>
 
-      {/* 開発者用リンク（最下部・極小） */}
+      {/* 開発者用リンク */}
       <div className="text-center py-4">
         <Link
           href="/dev/clear"
-          className="text-[10px] text-gray-200 hover:text-gray-400 transition-colors"
+          className="text-[10px] text-emerald-200/20 hover:text-emerald-200/40 transition-colors"
         >
           dev: cache
         </Link>
