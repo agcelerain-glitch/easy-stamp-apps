@@ -42,6 +42,10 @@ export async function POST(req: NextRequest) {
       if (error.code === "PGRST116") {
         return NextResponse.json({ error: "profile_not_found" }, { status: 404 });
       }
+      if (error.code === "22P02") {
+        // 不正な UUID 形式は「対象なし」と同等に扱う
+        return NextResponse.json({ error: "profile_not_found" }, { status: 404 });
+      }
       return NextResponse.json({ error: "db_error" }, { status: 500 });
     }
 
